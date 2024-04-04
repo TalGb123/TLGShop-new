@@ -1,0 +1,38 @@
+<table id="customer-table">
+    <thead>
+        <tr>
+            <th>Person ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Birth Date</th>
+            <th>City</th>
+            <th>Street</th>
+            <th>Building Number</th>
+            <th>Apartment Number</th>
+            <th>Cellphone Number</th>
+            <th>Account ID</th>
+            <th>Membership</th>
+            <th>MS Points</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for customer in customers %}
+            <tr>
+                <td>{{ customer.person_id }}</td>
+                <td>{{ customer.first_name }}</td>
+                <td>{{ customer.last_name }}</td>
+                <td>{{ customer.birth_date }}</td>
+                <td>{{ customer.city }}</td>
+                <td>{{ customer.street }}</td>
+                <td>{{ customer.building_number }}</td>
+                <td>{{ customer.apartment_number }}</td>
+                <td>{{ customer.cellphone_number }}</td>
+                <td>{{ customer.account.username }}</td>
+                <td>{{ customer.membership }}</td>
+                <td>{{ customer.ms_points }}</td>
+
+                <!-- Add other fields as needed -->
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

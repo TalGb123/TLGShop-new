@@ -1,0 +1,87 @@
+{% extends "shop/base.html" %}
+{% load static %}
+{% block content %}
+    <link
+        rel="stylesheet"
+        type="text/css"
+        href="{% static 'css/productpage.css' %}"
+    />
+
+    <div class="first-row">
+        <img src="{{ object.image.url }}" alt="" class="frame" />
+        <div>
+            <h1 style="margin-top: 50px; font-size: 40px">{{ object.name }}</h1>
+            <div class="stock">
+                <img
+                    src="{% static 'images/site-images/availability.svg' %}"
+                    style="height:25px; width:25px"
+                />
+                <template x-if="object.stock">
+                    <h2
+                        style="font-size: 20px; padding: 3px 0px; color: rgb(117, 167, 77);"
+                    >
+                        Stock
+                    </h2>
+                </template>
+                <template x-if="!(object.stock)">
+                    <h2
+                        style="font-size: 20px; padding: 3px 0px; color: rgb(255, 0, 0);"
+                    >
+                        Not In Stock
+                    </h2>
+                </template>
+            </div>
+
+            <div class="price">
+                <span style="margin-top: 100px; font-size: 30px">Price</span>
+                <span style="margin-top: 100px; font-size: 30px">
+                    Eilat Price
+                </span>
+            </div>
+            <div class="price">
+                <span
+                    style="margin-top: 5px; margin-left: 5px; font-size: 25px"
+                >
+                    {{ object.price }}
+                </span>
+                <span
+                    style="margin-top: 5px; margin-left: 45px; font-size: 25px"
+                >
+                    {{ object.eilat_price }}
+                </span>
+            </div>
+            <div class="buy-proc" style="margin-top: 50px">
+                <button class="buy-button">
+                    <div class="buy-proc" style="gap: 10px; margin-left: 5px">
+                        <h1
+                            style="font-size:16px; color:white; vertical-align: central; justify-content: center"
+                        >
+                            Add To Cart
+                        </h1>
+                        <img
+                            src="{% static 'images/site-images/shoppingcart.svg' %}"
+                        />
+                    </div>
+                </button>
+                <div class="amount-div" x-data="{ counter: 1 }">
+                    <button
+                        class="plus-minus-buttons"
+                        @click="counter = counter + 1"
+                    >
+                        <img src="{% static 'images/site-images/plus.svg' %}" />
+                    </button>
+                    <label x-text="counter" style="font-size: 20px"></label>
+                    <button
+                        class="plus-minus-buttons"
+                        @click="counter = counter - 1"
+                        :disabled="counter <= 1"
+                    >
+                        <img
+                            src="{% static 'images/site-images/minus.svg' %}"
+                        />
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

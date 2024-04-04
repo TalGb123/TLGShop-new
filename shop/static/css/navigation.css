@@ -1,0 +1,85 @@
+/* Reset some default margin and padding */
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/* Style the header to create the navigation bar */
+.navbar {
+    display: flex;
+    justify-content: space-between; /* Space out left and right sections */
+    align-items: center; /* Vertically center items in the header */
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+}
+
+/* Style the left section */
+.left-section {
+    display: flex;
+    align-items: center; /* Vertically center items in left section */
+}
+
+/* Style the logo */
+.logo img {
+    max-width: 100px; /* Adjust the logo size as needed */
+    margin-right: 20px; /* Add spacing between logo and buttons */
+}
+
+/* Style the row of buttons */
+.button-row {
+    list-style: none;
+    display: flex;
+}
+
+.button-row li {
+    margin-right: 20px;
+}
+
+.button-row a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.button-row a:hover {
+    color: #FF5733; /* Change to the desired color on hover */
+}
+
+.button-hover {
+    color: #FF5733;
+}
+
+/* Style the right section */
+.right-section {
+    display: flex;
+    align-items: center; /* Vertically center items in right section */
+}
+
+/* Style the login icons */
+.login-icons a {
+    margin-left: 20px; /* Add spacing between icons */
+}
+
+/* Change the SVG source on hover */
+.svg-icon {
+    height:24px; 
+    width: 24px;
+}     
+
+.svg-icon:hover {
+    filter: grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(0.8);
+}
+
+/* Media query for responsive design */
+@media screen and (max-width: 768px) {
+    .navbar {
+        flex-direction: column; /* Stack sections vertically on smaller screens */
+        align-items: center; /* Horizontally center items */
+    }
+
+    .left-section {
+        margin-bottom: 10px; /* Add spacing between sections */
+    }
+}

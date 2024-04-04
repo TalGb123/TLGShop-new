@@ -1,0 +1,102 @@
+{% load static %}
+
+<table
+    id="builder-table"
+    dir="ltr"
+    style="width: calc(100% - 40px); margin: 20px 20px;"
+>
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Picture</th>
+            <th>Item Name</th>
+            <th>Unit Price</th>
+            <th>Amount</th>
+            <th>Total</th>
+            <th></th>
+        </tr>
+        <tr>
+            <td
+                colspan="7"
+                style="background-color: black; color: white; text-align: center;"
+            >
+                HARDWARE
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for category, img in categories %}
+            <tr
+                class="invisible-button"
+                x-data="{ product: JSON.parse(localStorage.getItem('product-{{ category }}')),
+                          category: '{{ category }}',
+                        }"
+                x-on:click="
+                    fetch(`/builder/category-view/?category=${encodeURIComponent(category)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Category fetched:', data.products);
+                            products = data.products; // Update products array with fetched data
+                            $refs.modal.showModal();
+                        })
+                "
+            >
+                <td>
+                    <template x-if="product?.fields?.product_id">
+                        <input
+                            type="hidden"
+                            :name="`${category}-id`"
+                            x-model="product.fields.product_id"
+                        />
+                    </template>
+                    <div class="cellflex">
+                        <img
+                            src="{% static 'images/site-images/' %}{{ img }}"
+                            style="width: 30px; height: 30px"
+                        />
+                        <span class="textspan">{{ category }}</span>
+                    </div>
+                </td>
+                <td>
+                    <template x-if="product">
+                        <div class="cellflex">
+                            <img
+                                :src="product.fields.image"
+                                style="display: block;
+                                    margin-left: auto;
+                                    margin-right: auto;
+                                    width: 70px;
+                                    height: auto;"
+                            />
+                        </div>
+                    </template>
+                </td>
+                <td>
+                    <h2
+                        class="product-name"
+                        x-cloak
+                        x-show="product"
+                        x-text="product?.fields?.name"
+                    ></h2>
+                </td>
+                <td></td>
+                <td></td>
+                <td>
+                    <h2
+                        class="price"
+                        x-cloak
+                        x-show="product"
+                        x-text="product?.fields?.price"
+                    ></h2>
+                </td>
+                <td>
+                    <button class="trash">
+                        <img
+                            src="{% static 'images/site-images/trash.svg' %}"
+                        />
+                    </button>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

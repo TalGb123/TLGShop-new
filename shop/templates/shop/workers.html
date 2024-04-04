@@ -1,0 +1,274 @@
+{% extends "shop/base.html" %}
+{% load static %}
+{% block content %}
+    <h1>Workers</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>person id</th>
+                <th>first name</th>
+                <th>last name</th>
+                <th>birth date</th>
+                <th>city</th>
+                <th>street</th>
+                <th>building number</th>
+                <th>apartment number</th>
+                <th>cellphone number</th>
+                <th>account id</th>
+                <th>work branch</th>
+                <th>job title</th>
+                <th>workstart date</th>
+                <!-- Add other headers for your fields -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for worker in workers %}
+                <tr>
+                    <td>{{ worker.person_id }}</td>
+                    <td>{{ worker.first_name }}</td>
+                    <td>{{ worker.last_name }}</td>
+                    <td>{{ worker.birth_date }}</td>
+                    <td>{{ worker.city }}</td>
+                    <td>{{ worker.street }}</td>
+                    <td>{{ worker.building_number }}</td>
+                    <td>{{ worker.apartment_number }}</td>
+                    <td>{{ worker.cellphone_number }}</td>
+                    <td>{{ worker.account.username }}</td>
+                    <td>{{ worker.work_branch }}</td>
+                    <td>{{ worker.job_title }}</td>
+                    <td>{{ worker.workstart_date }}</td>
+
+                    <!-- Add other fields as needed -->
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Insert Modal -->
+    <div x-data>
+        <button @click="$refs.modal.showModal()">Insert</button>
+        <dialog x-ref="modal">
+            <form
+                method="post"
+                action="/workers/create"
+                style="display: flex; flex-direction: column"
+            >
+                <input
+                    type="hidden"
+                    name="csrfmiddlewaretoken"
+                    value="{{ csrf_token }}"
+                />
+                <label for="person_id">
+                    person id:
+                    <input type="text" name="person_id" />
+                </label>
+                <label for="first_name">
+                    first name:
+                    <input type="text" name="first_name" />
+                </label>
+                <label for="last_name">
+                    last name:
+                    <input type="text" name="last_name" />
+                </label>
+                <label for="birth_date">
+                    birth date:
+                    <input type="date" name="birth_date" />
+                </label>
+                <label for="city">
+                    city:
+                    <input type="text" name="city" />
+                </label>
+                <label for="street">
+                    street:
+                    <input type="text" name="street" />
+                </label>
+                <label for="building_number">
+                    building number:
+                    <input type="text" name="building_number" />
+                </label>
+                <label for="apartment_number">
+                    apartment number:
+                    <input type="text" name="apartment_number" />
+                </label>
+                <label for="cellphone_number">
+                    cellphone number:
+                    <input type="text" name="cellphone_number" />
+                </label>
+                <label for="username">
+                    Username:
+                    <input type="text" name="username" />
+                </label>
+                <label for="work_branch">
+                    Work Branch:
+                    <select name="work_branch">
+                        {% for value, label in branches %}
+                            <option
+                                value="{{ value }}"
+                                label="{{ label }}"
+                            ></option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label for="job_title">
+                    Job Title:
+                    <input type="text" name="job_title" />
+                </label>
+                <label for="workstart_date">
+                    Workstart Date:
+                    <input type="date" name="workstart_date" />
+                </label>
+                <button type="submit">Save</button>
+            </form>
+        </dialog>
+    </div>
+
+    <div
+        x-data="{ person_id: '', first_name: '', last_name: '', birth_date: '', city: '', street: '', building_number: '', apartment_number: '',
+            cellphone_number: '', account: '', work_branch: '', job_title: '', workstart_date: '',
+            worker: { person_id: '', first_name: '', last_name: '', birth_date: '', city: '', street: '', building_number: '', apartment_number: '',
+            cellphone_number: '', account: '', work_branch: '', job_title: '', workstart_date: '', } }"
+    >
+        <button @click="$refs.modal.showModal()">Search</button>
+        <dialog x-ref="modal">
+            <div>
+                <label>
+                    Search by person ID:
+                    <input type="text" name="person_id" x-model="person_id" />
+                </label>
+                <button
+                    @click="
+                        worker = await fetch(`/workers/search?person_id=${encodeURIComponent(person_id)}`)
+                            .then(res => res.json());   
+                    "
+                >
+                    Search
+                </button>
+
+                <button
+                    @click="
+                        await fetch(`/workers/delete`, {
+                            method: 'POST',
+                            body: `person_id=${encodeURIComponent(person_id)}`,
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                        });
+                        window.location.reload()
+                    "
+                >
+                    Delete
+                </button>
+            </div>
+
+            <button
+                @click="
+                    await fetch(`/workers/update`, {
+                        method: 'POST',
+                        body: new FormData($refs.form),
+                        // headers: {
+                        //     'Content-Type': 'application/x-www-form-urlencoded',
+                        // },
+                    });
+                    window.location.reload()
+                "
+            >
+                Update
+            </button>
+
+            <form x-ref="form" x-show="worker !== null">
+                <input type="hidden" name="person_id" :value="person_id" />
+                <h1>Search</h1>
+                {% csrf_token %}
+                <p>
+                    First Name:
+                    <input
+                        type="text"
+                        name="first_name"
+                        x-model="worker.first_name"
+                    />
+                </p>
+                <p>
+                    Last Name:
+                    <input
+                        type="text"
+                        name="last_name"
+                        x-model="worker.last_name"
+                    />
+                </p>
+                <p>
+                    Birth Date:
+                    <input
+                        type="date"
+                        name="birth_date"
+                        x-model="worker.birth_date"
+                    />
+                </p>
+                <p>
+                    City:
+                    <input type="text" name="city" x-model="worker.city" />
+                </p>
+                <p>
+                    Street:
+                    <input type="text" name="street" x-model="worker.street" />
+                </p>
+                <p>
+                    Building Number:
+                    <input
+                        type="number"
+                        name="building_number"
+                        x-model="worker.building_number"
+                    />
+                </p>
+                <p>
+                    Apartment Number:
+                    <input
+                        type="number"
+                        name="apartment_number"
+                        x-model="worker.apartment_number"
+                    />
+                </p>
+                <p>
+                    Cellphone Number:
+                    <input
+                        type="text"
+                        name="cellphone_number"
+                        x-model="worker.cellphone_number"
+                    />
+                </p>
+                <p>
+                    Account:
+                    <input
+                        type="text"
+                        name="account"
+                        x-model="worker.account"
+                    />
+                </p>
+
+                <p>
+                    Work Branch:
+                    <input
+                        type="text"
+                        name="work_branch"
+                        x-model="worker.work_branch"
+                    />
+                </p>
+                <p>
+                    Job Title:
+                    <input
+                        type="text"
+                        name="job_title"
+                        x-model="worker.job_title"
+                    />
+                </p>
+                <p>
+                    Workstart Date:
+                    <input
+                        type="date"
+                        name="workstart_date"
+                        x-model="worker.workstart_date"
+                    />
+                </p>
+            </form>
+        </dialog>
+    </div>
+{% endblock content %}

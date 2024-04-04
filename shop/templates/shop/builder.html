@@ -1,0 +1,87 @@
+{% extends "shop/base.html" %}
+{% load static %}
+{% block content %}
+    <link
+        rel="stylesheet"
+        type="text/css"
+        href="{% static 'css/build.css' %}"
+    />
+    <div
+        x-data="{
+            category: '', 
+            products: [],
+            saveToLocal(product) {
+                localStorage.setItem(`product-${product.fields.category}`, JSON.stringify(product));
+            },
+        }"
+    >
+        <form method="Get" action="/builder/search" x-ref="form">
+            <div>
+                <label>
+                    Have An Existing Spec?
+                    <input
+                        type="text"
+                        name="product_id"
+                    />
+                </label>
+                <button>
+                    Show
+                </button>
+        </form>
+        <form method="POST" action="/builder/save">
+            {% csrf_token %}
+            {% include 'shop/builder_table.html' %}
+            <button @click="localStorage.clear();" type="submit">Save</button>
+        </form>
+
+        <dialog x-ref="modal">
+            <div class="modal-content">
+                <div class="product-grid">
+                    <template x-for="product in products">
+                        <div
+                            x-init="htmx.process($el)"
+                            class="product-card"
+                            @click="saveToLocal(product); $refs.modal.close(); $dispatch('updt-tbl')"
+                            hx-trigger="updt-tbl"
+                            hx-get="{% url 'view-builder-table' %}"
+                            hx-target="#builder-table"
+                            hx-swap="outerHTML"
+                        >
+                            <!-- Your icon or link icon here -->
+                            <a :href="'/product/' + product.pk">
+                                <img
+                                    src="{% static 'images/site-images/product-page.svg' %}"
+                                    alt="Product Link"
+                                    style="width: 20px"
+                                />
+                            </a>
+                            <!-- Image of the product -->
+                            <img
+                                :src="product.fields.image"
+                                :alt="product.fields.name"
+                                style="vertical-align: baseline"
+                            />
+                            <!-- Name of the product -->
+                            <h2
+                                class="product-name"
+                                x-text="product.fields.name"
+                            ></h2>
+                            <!-- Price of the product -->
+                            <h2
+                                class="price"
+                                x-text="product.fields.price"
+                            ></h2>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </dialog>
+
+        <div id="totalsum-label">
+            <span style="color: white">
+                TOTAL:
+                <span id="sum" style="color: orange">**SUM**</span>
+            </span>
+        </div>
+    </div>
+{% endblock content %}

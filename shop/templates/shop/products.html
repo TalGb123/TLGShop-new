@@ -1,0 +1,396 @@
+{% extends "shop/base.html" %}
+{% load static %}
+{% block content %}
+    <head>
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="{% static 'css/products.css' %}"
+        />
+    </head>
+    <body>
+        <h1>products</h1>
+        <div class="container">
+            {% include "shop/product_list.html" %}
+            <div class="sidebar">
+                <div x-data>
+                    <button @click="$refs.modal.showModal()">Insert</button>
+                    <dialog x-ref="modal">
+                        <form
+                            method="post"
+                            action="/products/component-create"
+                            style="display: flex; flex-direction: column"
+                            enctype="multipart/form-data"
+                        >
+                            {% csrf_token %}
+                            <p>
+                                Product ID:
+                                <input type="text" name="product_id" />
+                            </p>
+                            <p>
+                                Name:
+                                <input type="text" name="name" />
+                            </p>
+                            <p>
+                                Price:
+                                <input type="number" name="price" />
+                            </p>
+                            <p>
+                                Manufacturer:
+                                <select name="manufacturer">
+                                    {% for value, label in mf_list %}
+                                        <option value="{{ value }}">
+                                            {{ label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </p>
+                            <p>
+                                Stock:
+                                <input type="checkbox" name="stock" />
+                            </p>
+                            <p>
+                                Category
+                                <select name="category">
+                                    {% for value, label in category_list %}
+                                        <option value="{{ value }}">
+                                            {{ label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </p>
+                            <p>
+                                Manufacturer Page:
+                                <input type="url" name="mf_page" />
+                            </p>
+                            <p>
+                                Image Upload:
+                                <input type="file" name="image" />
+                            </p>
+                            <button type="submit">Save</button>
+                        </form>
+                    </dialog>
+                </div>
+                <div
+                    x-data="{ product_id: '', name: '', price: '', manufacturer: '', stock: '', mf_page: '', image: '', category: '',
+                    type: '', components: '',
+                    product: { product_id: '', name: '', price: '', manufacturer: '', stock: '', mf_page: '', image: '', category: '', components: '',
+                    type: '', } }"
+                >
+                    <button @click="$refs.modal.showModal()">Search</button>
+                    <dialog x-ref="modal">
+                        <div>
+                            <label>
+                                Search by product ID:
+                                <input
+                                    type="text"
+                                    name="product_id"
+                                    x-model="product_id"
+                                />
+                            </label>
+                            <button
+                                @click="
+                        product = await fetch(`/products/search?product_id=${encodeURIComponent(product_id)}`)
+                            .then(res => res.json());   
+                    "
+                            >
+                                Search
+                            </button>
+
+                            <button
+                                @click="
+                        await fetch(`/products/delete`, {
+                            method: 'POST',
+                            body: `product_id=${encodeURIComponent(product_id)}`,
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                                'X-CSRFToken': '{{ csrf_token }}',
+                            },
+                        });
+                        window.location.reload()
+                    "
+                            >
+                                Delete
+                            </button>
+
+                            <button
+                                @click="
+                    await fetch(`/products/update`, {
+                        method: 'POST',
+                        body: new FormData($refs.form),
+                    });
+                    window.location.reload()
+                "
+                            >
+                                Update
+                            </button>
+                        </div>
+
+                        <form
+                            x-ref="form"
+                            x-show="product !== null"
+                            enctype="multipart/form-data"
+                            method="post"
+                        >
+                            {% csrf_token %}
+                            <input
+                                type="hidden"
+                                name="product_id"
+                                :value="product_id"
+                            />
+                            <p>
+                                Name:
+                                <input
+                                    type="text"
+                                    name="name"
+                                    x-model="product.name"
+                                />
+                            </p>
+                            <p>
+                                Price:
+                                <input
+                                    type="number"
+                                    name="price"
+                                    x-model="product.price"
+                                />
+                            </p>
+                            <p>
+                                Manufacturer:
+                                <select
+                                    name="manufacturer"
+                                    default="product.manufacturer"
+                                    x-model="product.manufacturer"
+                                >
+                                    {% for value, label in mf_list %}
+                                        <option value="{{ value }}">
+                                            {{ label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </p>
+                            <p>
+                                Stock:
+                                <input
+                                    type="checkbox"
+                                    name="stock"
+                                    x-model="product.stock"
+                                />
+                            </p>
+                            <p>
+                                Category
+                                <select
+                                    name="category"
+                                    default="product.category"
+                                    x-model="product.category"
+                                >
+                                    {% for value, label in category_list %}
+                                        <option value="{{ value }}">
+                                            {{ label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </p>
+                            <p>
+                                Manufacturer Page:
+                                <input
+                                    type="url"
+                                    name="mf_page"
+                                    x-model="product.mf_page"
+                                />
+                            </p>
+                            <p>
+                                Image Upload:
+
+                                <input type="file" name="image" />
+                            </p>
+                            <p>
+                                Current Image:
+                                <input
+                                    type="text"
+                                    name="current-image"
+                                    x-model="product.image"
+                                />
+                            </p>
+                        </form>
+                    </dialog>
+                </div>
+
+                <form action="/products/filter" method="GET">
+                    <div>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="manufacturer"
+                                value="Asus"
+                            />
+                            ASUS
+                        </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="manufacturer"
+                                value="Gigabyte"
+                            />
+                            Gigabyte
+                        </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="manufacturer"
+                                value="Coolermaster"
+                            />
+                            Coolermaster
+                        </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="manufacturer"
+                                value="Lian Li"
+                            />
+                            Lian Li
+                        </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="manufacturer"
+                                value="Corsair"
+                            />
+                            Corsair
+                        </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="manufacturer"
+                                value="Antec"
+                            />
+                            Antec
+                        </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="manufacturer"
+                                value="Sapphire"
+                            />
+                            Sapphire
+                        </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="manufacturer"
+                                value="AMD"
+                            />
+                            AMD
+                        </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="manufacturer"
+                                value="Intel"
+                            />
+                            Intel
+                        </label>
+                    </div>
+
+                    <div>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="category"
+                                value="Processor"
+                            />
+                            Processor
+                        </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="category"
+                                value="Cooler"
+                            />
+                            Cooling System
+                        </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="category"
+                                value="Motherboard"
+                            />
+                            Motherboard
+                        </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="category"
+                                value="Memory"
+                            />
+                            Memory
+                        </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="category"
+                                value="Power Supply"
+                            />
+                            Power Supply
+                        </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="category"
+                                value="Storage"
+                            />
+                            Storage
+                        </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="category"
+                                value="Case"
+                            />
+                            Case
+                        </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="category"
+                                value="Graphics Card"
+                            />
+                            Graphics Card
+                        </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="category"
+                                value="Keyboard"
+                            />
+                            Keyboard
+                        </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="category"
+                                value="Mouse"
+                            />
+                            Mouse
+                        </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="category"
+                                value="Monitor"
+                            />
+                            Monitor
+                        </label>
+                    </div>
+                    <button
+                        type="submit"
+                        hx-get="{% url 'filter-products' %}"
+                        hx-include="closest form"
+                        hx-target="#product-list"
+                    >
+                        Filter
+                    </button>
+                </form>
+            </div>
+        </div>
+    </body>
+{% endblock content %}

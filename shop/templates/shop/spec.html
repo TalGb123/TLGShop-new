@@ -1,0 +1,65 @@
+{% extends "shop/base.html" %}
+{% load static %}
+{% block content %}
+    <div>
+        <h1 style="align-content: center; font-size: large;">
+            {{ product_id }}
+        </h1>
+
+        <table
+            id="spec-table"
+            dir="ltr"
+            style="width: calc(100% - 40px); margin: 20px 20px;"
+        >
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Product ID</th>
+                    <th>Item Name</th>
+                    <th>Unit Price</th>
+                    <th>Amount</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for comp in components %}
+                    <tr>
+                        <td>
+                            <div class="cellflex">
+                                <span class="textspan">
+                                    {{ comp.comp_category }}
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="textspan">{{ comp.comp_id }}</span>
+                        </td>
+                        <td>
+                            <span class="textspan">{{ comp.comp_name }}</span>
+                        </td>
+                        <td>
+                            <span class="textspan">{{ comp.comp_price }}</span>
+                        </td>
+                        <td>1</td>
+                        <td>
+                            <span class="textspan">{{ comp.comp_price }}</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tr id="totalsum-label" style="background-color: black;">
+                <td>
+                    <h4 style="color: white">TOTAL:</h4>
+                </td>
+                <td colspan="5">
+                    <span
+                        id="sum"
+                        style="color: orange; justify-content: flex-end;"
+                    >
+                        {{ price }}
+                    </span>
+                </td>
+            </tr>
+        </table>
+    </div>
+{% endblock content %}

@@ -1,0 +1,231 @@
+{% extends "shop/base.html" %}
+{% load static %}
+{% block content %}
+    <h1>Customers</h1>
+    {% include "shop/customers_table.html" %}
+
+    <!-- Insert Modal -->
+    <div x-data="">
+        <button
+            @click="$refs.modal.showModal(); $dispatch('insert-tbl')"
+            hx-trigger="insert-tbl"
+            hx-get="{% url 'view-customers-table' %}"
+            hx-target="#customer-table"
+        >
+            Insert
+        </button>
+        <dialog x-ref="modal">
+            <form
+                method="post"
+                action="/customers/create"
+                style="display: flex; flex-direction: column"
+            >
+                {% csrf_token %}
+                <label for="person_id">
+                    Person ID:
+                    <input type="text" name="person_id" />
+                </label>
+                <label for="first_name">
+                    First Name:
+                    <input type="text" name="first_name" />
+                </label>
+                <label for="last_name">
+                    Last Name:
+                    <input type="text" name="last_name" />
+                </label>
+                <label for="birth_date">
+                    Birth Date:
+                    <input type="date" name="birth_date" />
+                </label>
+                <label for="city">
+                    City:
+                    <input type="text" name="city" />
+                </label>
+                <label for="street">
+                    Street:
+                    <input type="text" name="street" />
+                </label>
+                <label for="building_number">
+                    Building Number:
+                    <input type="text" name="building_number" />
+                </label>
+                <label for="apartment_number">
+                    Apartment Number:
+                    <input type="text" name="apartment_number" />
+                </label>
+                <label for="cellphone_number">
+                    Cellphone Number:
+                    <input type="text" name="cellphone_number" />
+                </label>
+                <label for="username">
+                    Username:
+                    <input type="text" name="username" />
+                </label>
+                <label for="membership">
+                    Membership:
+                    <input type="checkbox" name="membership" />
+                </label>
+                <label for="ms_points">
+                    MS Points:
+                    <input type="text" name="ms_points" />
+                </label>
+                <button type="submit">Save</button>
+            </form>
+        </dialog>
+    </div>
+
+    <!-- Search Modal -->
+    <div
+        x-data="{ person_id: '', first_name: '', last_name: '', birth_date: '', city: '', street: '', building_number: '', apartment_number: '',
+            cellphone_number: '', account: '', membership: '', ms_points: '',
+            customer: { person_id: '', first_name: '', last_name: '', birth_date: '', city: '', street: '', building_number: '', apartment_number: '',
+            cellphone_number: '', account: '', membership: '', ms_points: '', } }"
+    >
+        <button @click="$refs.modal.showModal()">Search</button>
+        <dialog x-ref="modal">
+            <div>
+                <label>
+                    Search by person ID:
+                    <input type="text" name="person_id" x-model="person_id" />
+                </label>
+                <button
+                    @click="
+                        customer = await fetch(`/customers/search?person_id=${encodeURIComponent(person_id)}`)
+                            .then(res => res.json());   
+                    "
+                >
+                    Search
+                </button>
+
+                <form x-ref="deleteForm" style="display: none;">
+                    {% csrf_token %}
+                    <input type="hidden" name="person_id" :value="person_id" />
+                </form>
+
+                <button
+                    @click="
+                        await fetch(`/customers/delete`, {
+                            method: 'POST',
+                            body: new FormData($refs.deleteForm),
+                        });
+                        $dispatch('update-tbl');
+                        $refs.modal.close();
+                    "
+                    hx-trigger="update-tbl"
+                    hx-get="{% url 'view-customers-table' %}"
+                    hx-target="#customer-table"
+                    hx-swap="outerHTML"
+                >
+                    Delete
+                </button>
+
+                <button
+                    @click="
+                        await fetch('/customers/update', {
+                            method: 'POST',
+                            body: new FormData($refs.form),
+                        });
+                        $dispatch('update-tbl');
+                        $refs.modal.close();
+                    "
+                    hx-trigger="update-tbl"
+                    hx-get="{% url 'view-customers-table' %}"
+                    hx-target="#customer-table"
+                >
+                    Update
+                </button>
+            </div>
+
+            <form x-ref="form" x-show="customer !== null">
+                {% csrf_token %}
+                <input type="hidden" name="person_id" :value="person_id" />
+                <h1>Search</h1>
+                <p>
+                    First Name:
+                    <input
+                        type="text"
+                        name="first_name"
+                        x-model="customer.first_name"
+                    />
+                </p>
+                <p>
+                    Last Name:
+                    <input
+                        type="text"
+                        name="last_name"
+                        x-model="customer.last_name"
+                    />
+                </p>
+                <p>
+                    Birth Date:
+                    <input
+                        type="date"
+                        name="birth_date"
+                        x-model="customer.birth_date"
+                    />
+                </p>
+                <p>
+                    City:
+                    <input type="text" name="city" x-model="customer.city" />
+                </p>
+                <p>
+                    Street:
+                    <input
+                        type="text"
+                        name="street"
+                        x-model="customer.street"
+                    />
+                </p>
+                <p>
+                    Building Number:
+                    <input
+                        type="number"
+                        name="building_number"
+                        x-model="customer.building_number"
+                    />
+                </p>
+                <p>
+                    Apartment Number:
+                    <input
+                        type="number"
+                        name="apartment_number"
+                        x-model="customer.apartment_number"
+                    />
+                </p>
+                <p>
+                    Cellphone Number:
+                    <input
+                        type="text"
+                        name="cellphone_number"
+                        x-model="customer.cellphone_number"
+                    />
+                </p>
+                <p>
+                    Account:
+                    <input
+                        type="text"
+                        name="account"
+                        x-model="customer.account"
+                    />
+                </p>
+
+                <p>
+                    Membership:
+                    <input
+                        type="checkbox"
+                        name="membership"
+                        x-model="customer.membership"
+                    />
+                </p>
+                <p>
+                    MS Points:
+                    <input
+                        type="number"
+                        name="ms_points"
+                        x-model="customer.ms_points"
+                    />
+                </p>
+            </form>
+        </dialog>
+    </div>
+{% endblock content %}

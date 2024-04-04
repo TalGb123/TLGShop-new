@@ -1,0 +1,57 @@
+.frame {
+    width: 600px;
+    height: 600px;
+    border: 2px solid #000;
+    background: #fff;
+    padding: 15px 10px;
+}
+
+.first-row {
+    display: flex;
+    flex-direction: row;
+    gap: 60px;
+    align-items: start;
+    margin: 50px;
+}
+
+.price {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+}
+
+.buy-button {
+    background-color: black;
+    height: 40px;
+    width: 160px;
+    cursor:pointer;
+}
+
+.buy-proc {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.plus-minus-buttons {
+    background: none;
+    cursor: pointer;
+    border: none;
+}
+
+.amount-div {
+    border: 3px #000 solid;
+    padding: 4px;
+    height: 40px;
+    gap: 8px;
+    vertical-align: middle;
+    display: flex;
+    flex-direction: row;
+}
+
+.stock {
+    display: flex;
+    flex-direction: row;
+    gap: 3px;
+    vertical-align: middle;
+}

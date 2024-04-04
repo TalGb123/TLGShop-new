@@ -1,0 +1,162 @@
+{% load static %}
+<!doctype html>
+<html>
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+
+        <script src="https://unpkg.com/htmx.org@1"></script>
+        <script src="https://unpkg.com/htmx.org@latest/dist/ext/alpine-morph.js"></script>
+        <script src="https://unpkg.com/alpinejs@3" defer></script>
+        <script
+            src="https://unpkg.com/@alpinejs/morph@3/dist/cdn.min.js"
+            defer
+        ></script>
+
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="{% static 'css/navigation.css' %}"
+        />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="{% static 'css/index.css' %}"
+        />
+
+        {% if title %}
+            <title>TLGShop - {{ title }}</title>
+        {% else %}
+            <title>TLGShop</title>
+        {% endif %}
+    </head>
+    <body>
+        <header class="navbar">
+            <div class="left-section">
+                <div class="logo">
+                    <img
+                        src="{% static 'images/site-images/TLG logo.png' %}"
+                        alt=""
+                    />
+                </div>
+                <nav>
+                    <ul class="button-row">
+                        <li><a href="{% url 'view-home' %}">Home</a></li>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Branches</a></li>
+                        <li>
+                            <a href="{% url 'view-builder' %}">
+                                Build A Computer
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'view-products' %}">Products</a>
+                        </li>
+                        {% if worker %}
+                            <li>
+                                <a href="{% url 'view-orders' %}">Orders</a>
+                            </li>
+                        {% endif %}
+                        {% if worker %}
+                            <li>
+                                <a href="{% url 'view-workers' %}">Workers</a>
+                            </li>
+                        {% endif %}
+                        {% if worker %}
+                            <li>
+                                <a href="{% url 'view-customers' %}">
+                                    Customers
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            <div class="right-section">
+                <ul class="button-row">
+                    {% if user.is_authenticated %}
+                        <li>
+                            <a href="{% url 'profile' %}" class="acc-button">
+                                Profile
+                            </a>
+                        </li>
+                        <li>
+                            <form
+                                method="POST"
+                                action="{% url 'logout' %}"
+                                class="acc-button"
+                            >
+                                {% csrf_token %}
+                                <button
+                                    style="text-decoration: none;
+                                color: #fff;
+                                font-weight: bold;
+                                font-size: 20px;
+                                background: none;
+                                cursor: pointer;
+                                border: none;
+                                outline: none;
+                                "
+                                    class="button-hover"
+                                >
+                                    Logout
+                                </button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="{% url 'login' %}" class="acc-button">
+                                Login
+                            </a>
+                        </li>
+                    {% endif %}
+                    <div class="login-icons">
+                        <a href="#" class="sc-button">
+                            <img
+                                src="{% static 'images/site-images/shoppingcart.svg' %}"
+                                alt=""
+                                class="svg-icon"
+                            />
+                        </a>
+                    </div>
+                </ul>
+            </div>
+        </header>
+
+        <div style="margin: 0px 20px;">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% block content %}
+            {% endblock %}
+        </div>
+
+        {% comment %}
+            <!-- Optional JavaScript -->
+            <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+            <script
+                src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+                integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+                crossorigin="anonymous"
+            ></script>
+            <script
+                src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+                integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+                crossorigin="anonymous"
+            ></script>
+            <script
+                src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+                integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+                crossorigin="anonymous"
+            ></script>
+        {% endcomment %}
+    </body>
+</html>

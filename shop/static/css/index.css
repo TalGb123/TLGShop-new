@@ -1,0 +1,25 @@
+[x-cloak] {
+    display: none !important;
+}
+
+table, tr, td, th{
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 8px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.row-flex {
+    display: flex;
+    flex-direction: row;
+    gap:20px;
+}
+  
+.col-flex {
+    display: flex;
+    flex-direction: column;
+}
+
+
+

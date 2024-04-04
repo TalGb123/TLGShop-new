@@ -1,0 +1,13 @@
+htmlWhitespaceSensitivity: "ignore"
+tabWidth: 4
+plugins: ["prettier-plugin-jinja-template"]
+overrides:
+  - files: ["*.yml", "*.yaml"]
+    options:
+      tabWidth: 2
+  - files: [".prettierrc"]
+    options:
+      parser: "yaml"
+  - files: ["*.html"]
+    options:
+      parser: "jinja-template"
