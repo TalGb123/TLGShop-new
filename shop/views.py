@@ -260,11 +260,8 @@ def create_customer(request: HttpRequest):
         if last_name is None:
             return HttpResponse(request)
 
-        if birth_date is None:
-            return HttpResponse(request)
-
         if city is None:
-            return HttpResponse(request)
+            city = ""
 
         if street is None:
             street = ""
@@ -276,7 +273,7 @@ def create_customer(request: HttpRequest):
             apartment_number = ""
 
         if cellphone_number is None:
-            return HttpResponse(request)
+            cellphone_number = ""
 
         if account is None:
             return HttpResponse(request)
@@ -818,8 +815,8 @@ def view_orders(request):
 
 
 def is_worker(request):
-    worker = (
-        request.user.is_authenticated
-        and request.user.groups.filter(name="Worker").exists()
+    worker = request.user.is_authenticated and (
+        request.user.groups.filter(name="Worker").exists()
+        or request.user.groups.filter(name="Admin").exists()
     )
     return worker

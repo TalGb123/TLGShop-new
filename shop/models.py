@@ -11,18 +11,19 @@ class HumanResources(models.Model):
     person_id = models.CharField(unique=True, max_length=9)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    birth_date = models.DateField()
-    city = models.CharField(max_length=50)
+    birth_date = models.DateField(default="0001-01-01")
+    city = models.CharField(max_length=50, null=True)
     street = models.CharField(null=True, max_length=50)
     building_number = models.IntegerField(null=True)
     apartment_number = models.IntegerField(null=True)
-    cellphone_number = models.CharField(max_length=10)
+    cellphone_number = models.CharField(max_length=10, null=True)
     account = models.ForeignKey(User, on_delete=models.CASCADE)
+    email = models.EmailField(null=True)
 
 
 class Customer(HumanResources):
-    membership = models.BooleanField(default=False)
-    ms_points = models.IntegerField()
+    membership = models.BooleanField(default=False, null=True)
+    ms_points = models.IntegerField(null=True)
 
 
 class Worker(HumanResources):
@@ -31,7 +32,7 @@ class Worker(HumanResources):
     branches: list[tuple[str, str]] = [(BEERSHEVA, "Beer Sheva"), (EILAT, "Eilat")]
     work_branch = models.CharField(max_length=50, choices=branches, default=BEERSHEVA)
     job_title = models.CharField(max_length=50)
-    workstart_date = models.DateField()
+    workstart_date = models.DateField(auto_now_add=True)
 
 
 class Product(models.Model):
@@ -62,7 +63,7 @@ class Product(models.Model):
     name = models.CharField(unique=True, max_length=50)
     price = models.IntegerField()
     manufacturer = models.CharField(max_length=50, choices=mf_list, default=ASUS)
-    stock = models.BooleanField(default=False)
+    stock = models.BooleanField(default=False, null=True)
     mf_page = models.URLField()
     image = models.ImageField(
         upload_to="product-images",
@@ -138,4 +139,4 @@ class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     payment_method = models.CharField(max_length=50, choices=payment, default=CC)
     products = models.ManyToManyField(Product)
-    date = models.DateTimeField()
+    date = models.DateTimeField(auto_now_add=True)

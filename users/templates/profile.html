@@ -1,16 +1,122 @@
 {% extends "shop/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <header>
-        <!-- Bootstrap CSS -->
-        <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-            crossorigin="anonymous"
-        />
-    </header>
+    <header></header>
     <body>
-        <h2>{{ user.username }}</h2>
+        <h2>Hello {{ user.username }}</h2>
+        <div
+            x-data="{ person_id: '', first_name: '', last_name: '', email: '', birth_date: '', city: '', street: '', building_number: '', apartment_number: '',
+            cellphone_number: '', account: '', membership: '', ms_points: '',
+            customer: { person_id: '', first_name: '', last_name: '', email: '', birth_date: '', city: '', street: '', building_number: '', apartment_number: '',
+            cellphone_number: '', } }"
+        >
+            <button
+                @click="
+                    console.log('hahaha3');
+                    $refs.modal.showModal();
+                    customer = await fetch(`/profile/details`)
+                        .then(res => res.json());
+                "
+            >
+                Edit Profile
+            </button>
+            <dialog x-ref="modal">
+                <form x-ref="form">
+                    {% csrf_token %}
+                    <h1>Edit Details</h1>
+                    <p>
+                        Person ID:
+                        <input
+                            type="text"
+                            name="person_id"
+                            x-model="customer.person_id"
+                        />
+                    </p>
+                    <p>
+                        First Name:
+                        <input
+                            type="text"
+                            name="first_name"
+                            x-model="customer.first_name"
+                        />
+                    </p>
+                    <p>
+                        Last Name:
+                        <input
+                            type="text"
+                            name="last_name"
+                            x-model="customer.last_name"
+                        />
+                    </p>
+                    <p>
+                        Email:
+                        <input
+                            type="email"
+                            name="email"
+                            x-model="customer.email"
+                        />
+                    </p>
+                    <p>
+                        Birth Date:
+                        <input
+                            type="date"
+                            name="birth_date"
+                            x-model="customer.birth_date"
+                        />
+                    </p>
+                    <p>
+                        City:
+                        <input
+                            type="text"
+                            name="city"
+                            x-model="customer.city"
+                        />
+                    </p>
+                    <p>
+                        Street:
+                        <input
+                            type="text"
+                            name="street"
+                            x-model="customer.street"
+                        />
+                    </p>
+                    <p>
+                        Building Number:
+                        <input
+                            type="number"
+                            name="building_number"
+                            x-model="customer.building_number"
+                        />
+                    </p>
+                    <p>
+                        Apartment Number:
+                        <input
+                            type="number"
+                            name="apartment_number"
+                            x-model="customer.apartment_number"
+                        />
+                    </p>
+                    <p>
+                        Cellphone Number:
+                        <input
+                            type="text"
+                            name="cellphone_number"
+                            x-model="customer.cellphone_number"
+                        />
+                    </p>
+                </form>
+                <button
+                    @click="
+                        await fetch('/profile/update', {
+                            method: 'POST',
+                            body: new FormData($refs.form),
+                        });
+                        $refs.modal.close();
+                    "
+                >
+                    Update
+                </button>
+            </dialog>
+        </div>
     </body>
 {% endblock content %}
