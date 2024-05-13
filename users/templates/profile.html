@@ -12,7 +12,6 @@
         >
             <button
                 @click="
-                    console.log('hahaha3');
                     $refs.modal.showModal();
                     customer = await fetch(`/profile/details`)
                         .then(res => res.json());

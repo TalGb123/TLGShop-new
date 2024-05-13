@@ -40,11 +40,8 @@ def filter_products(request: HttpRequest):
 
     data = Component.objects.all()
 
-    print(selected_manufacturers)
     if selected_manufacturers:
         data = Component.objects.filter(manufacturer__in=selected_manufacturers)
-
-    print(data)
 
     if selected_categories:
         data = data.filter(category__in=selected_categories)
@@ -394,8 +391,10 @@ def update_customer(request: HttpRequest):
     if account is not None:
         customer.account = User.objects.get(pk=int(account))
     customer.membership = membership is not None
+    if ms_points == "":
+        customer.ms_points = 0
     if ms_points is not None:
-        customer.ms_points = int(ms_points)
+        customer.ms_points = ms_points
 
     customer.save()
 
@@ -621,7 +620,6 @@ def view_builder(request):
 def category_list(request: HttpRequest):
     if request.method == "GET":
         category = request.GET.get("category")
-        print("Category:", category)
         # Filter products by category
         products = Component.objects.filter(category=category)
         # Serialize products using Django's serializer
@@ -655,7 +653,7 @@ def view_builder_table(request: HttpRequest):
             ("Memory", "memory.svg"),
             ("Power Supply", "psu.svg"),
             ("Storage", "storage.svg"),
-            ("Case", "case.svg"),
+            ("Cas   e", "case.svg"),
             ("Graphics Card", "gpu.svg"),
             ("Keyboard", "kbm.svg"),
             ("Mouse", "kbm.svg"),
@@ -701,7 +699,7 @@ def save_spec(request: HttpRequest):
         monitor_id = request.POST.get("Monitor-id")
 
         # Get or create Computer instance
-        product_id = f"spec-{''.join(random.choices('abcdefghijklmnopqrstuvwxyz1234567890', k=10))}"
+        product_id = f"{''.join(random.choices('1234567890', k=6))}"
         new_pc = Computer(
             product_id=product_id,
             name=product_id,

@@ -69,7 +69,6 @@ def profile(request: HttpRequest):
 def profile_show_data(request: HttpRequest):
     if request.method == "GET":
         try:
-            print(repr(request.user.id))
             customer = Customer.objects.get(account=request.user)
 
             data = {
