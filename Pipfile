@@ -9,6 +9,10 @@ django-crispy-forms = "*"
 crispy-bootstrap4 = "*"
 pillow = "*"
 orjson = "*"
+django-hcaptcha-field = "*"
+fastapi = "*"
+uvicorn = "*"
+pydantic = "*"
 
 [dev-packages]
 

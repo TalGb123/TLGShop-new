@@ -1,0 +1,41 @@
+<table id="worker-table">
+    <thead>
+        <tr>
+            <th>person id</th>
+            <th>first name</th>
+            <th>last name</th>
+            <th>birth date</th>
+            <th>city</th>
+            <th>street</th>
+            <th>building number</th>
+            <th>apartment number</th>
+            <th>cellphone number</th>
+            <th>account id</th>
+            <th>work branch</th>
+            <th>job title</th>
+            <th>workstart date</th>
+            <!-- Add other headers for your fields -->
+        </tr>
+    </thead>
+    <tbody>
+        {% for worker in workers %}
+            <tr>
+                <td>{{ worker.person_id }}</td>
+                <td>{{ worker.first_name }}</td>
+                <td>{{ worker.last_name }}</td>
+                <td>{{ worker.birth_date }}</td>
+                <td>{{ worker.city }}</td>
+                <td>{{ worker.street }}</td>
+                <td>{{ worker.building_number }}</td>
+                <td>{{ worker.apartment_number }}</td>
+                <td>{{ worker.cellphone_number }}</td>
+                <td>{{ worker.account.username }}</td>
+                <td>{{ worker.work_branch }}</td>
+                <td>{{ worker.job_title }}</td>
+                <td>{{ worker.workstart_date }}</td>
+
+                <!-- Add other fields as needed -->
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

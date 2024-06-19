@@ -45,6 +45,7 @@ class Product(models.Model):
     SAPPHIRE = "Sapphire"
     AMD = "AMD"
     INTEL = "Intel"
+    LOGITECH = "Logitech"
 
     mf_list: list[tuple[str, str]] = [
         (ASUS, "Asus"),
@@ -56,6 +57,7 @@ class Product(models.Model):
         (SAPPHIRE, "Sapphire"),
         (AMD, "AMD"),
         (INTEL, "Intel"),
+        (LOGITECH, "Logitech"),
     ]
 
     id = models.AutoField(primary_key=True)

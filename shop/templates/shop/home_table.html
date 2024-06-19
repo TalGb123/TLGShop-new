@@ -1,0 +1,15 @@
+<table id="home-table">
+    <tbody>
+        {% for message in messages %}
+            <tr>
+                <td>{{ message.subject }}</td>
+                <td>{{ message.content }}</td>
+                <td>{{ message.date_time }}</td>
+                <td>{{ message.username }}</td>
+                
+
+                <!-- Add other fields as needed -->
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

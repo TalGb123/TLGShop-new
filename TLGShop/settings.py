@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "users.apps.UsersConfig",
     "crispy_forms",
     "crispy_bootstrap4",
+    "hcaptcha_field",
 ]
 
 MIDDLEWARE = [
@@ -139,3 +140,12 @@ LOGIN_URL = "login"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+HCAPTCHA_SITEKEY = "4decf011-f6aa-4464-918e-64985775f432"
+HCAPTCHA_SECRET = "ES_a350821b7f43491f85f9e08531e291a6"
+
+HCAPTCHA_TIMEOUT = 5
+
+HCAPTCHA_PROXIES = {
+    "http": "http://127.0.0.1:8000",
+}

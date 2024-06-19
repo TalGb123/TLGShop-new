@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from hcaptcha_field import hCaptchaField
 
 
 class UserRegisterForm(UserCreationForm):
@@ -8,6 +9,7 @@ class UserRegisterForm(UserCreationForm):
     id = forms.CharField(required=True, max_length=9)
     first_name = forms.CharField(required=True, max_length=20)
     last_name = forms.CharField(required=True, max_length=20)
+    hcaptcha = hCaptchaField()
 
     class Meta:
         model = User
@@ -19,4 +21,5 @@ class UserRegisterForm(UserCreationForm):
             "email",
             "password1",
             "password2",
+            "hcaptcha",
         ]
