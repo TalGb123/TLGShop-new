@@ -52,10 +52,7 @@ def register(req: HttpRequest):
 def email_vrf(chosen_mail):
     conn = http.client.HTTPConnection("api.eva.pingutil.com")
     payload = ""
-    headers = {}
-    conn.request(
-        "GET", f"/email?{urlencode({ 'email': chosen_mail })}", payload, headers
-    )
+    conn.request("GET", f"/email?{urlencode({ 'email': chosen_mail })}", payload)
     res = conn.getresponse()
     return orjson.loads(res.read().decode())["data"]["deliverable"]
 

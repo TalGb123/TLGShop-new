@@ -5,7 +5,9 @@
             <h2 class="product-name">{{ product.name }}</h2>
             <p class="product-id">{{ product.product_id }}</p>
             <p class="price">₪{{ product.price }}</p>
-            <button class="buy-button">Buy Now</button>
+            <button class="buy-button">
+                <a :href="'/product/' + product.pk">Product Info</a>
+            </button>
         </div>
     {% endfor %}
 </div>

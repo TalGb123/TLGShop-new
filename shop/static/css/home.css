@@ -1,0 +1,39 @@
+.message-flexbox {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-content: center;
+}
+
+.message {
+    display: flex;
+    flex-direction: row;
+    gap:15px;
+    border: 2px solid black;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    min-height: 200px;
+}
+
+.date {
+    vertical-align: top;
+    font-size: 20px;
+    color: gray;
+    font-style: italic;
+    justify-content: end;
+}
+
+.subject {
+    font-size: 30px;
+    font-weight: bold;
+    justify-content: start;
+    vertical-align: top;
+}
+
+.content {
+    font: optional;
+    font-size: 20px;
+    justify-content: start;
+    vertical-align: middle;
+}

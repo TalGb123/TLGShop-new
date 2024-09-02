@@ -1,15 +1,94 @@
-<table id="home-table">
-    <tbody>
-        {% for message in messages %}
-            <tr>
-                <td>{{ message.subject }}</td>
-                <td>{{ message.content }}</td>
-                <td>{{ message.date_time }}</td>
-                <td>{{ message.username }}</td>
-                
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}" />
+<div class="message-flexbox">
+    {% for message in admin_messages %}
+        <div
+            x-data="{ id: '{{ message.id }}', admin_message: { id: '{{ message.id }}', subject: '{{ message.subject }}', content: '{{ message.content }}' } }"
+        >
+            <div class="message">
+                <div
+                    class="col-flex"
+                    style="gap:20px; min-width: 500px; max-width: 600px;"
+                >
+                    <span class="subject">{{ message.subject }}</span>
+                    <span class="content">{{ message.content }}</span>
+                </div>
 
-                <!-- Add other fields as needed -->
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+                <div
+                    class="message-flexbox"
+                    style="gap:5px; justify-content: end; margin-left: 1050px"
+                >
+                    <span class="date">{{ message.date_time }}</span>
+                    <span class="username">{{ message.username }}</span>
+                    <span>
+                        <button
+                            @click="
+                            await fetch(`/messages/delete`, {
+                            method: 'POST',
+                            body: new FormData($refs.deleteForm),
+                        });
+                "
+                            hx-get="{% url 'view-home-table' %}"
+                            hx-target="#home-table"
+                            hx-swap="outerHTML"
+                        >
+                            Delete
+                        </button>
+                        <button
+                            @click="
+                        const updateModal = $el.closest('tr').querySelector('.update-modal');
+                        console.log(updateModal);
+                        updateModal.showModal()
+                    "
+                        >
+                            Update
+                        </button>
+                    </span>
+                </div>
+            </div>
+            <form x-ref="deleteForm" style="display: none;">
+                {% csrf_token %}
+                <input type="hidden" name="id" :value="id" />
+            </form>
+
+            <dialog class="update-modal">
+                <form x-ref="updateForm" x-show="admin_message != null">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" :value="id" />
+                    <h1>Update</h1>
+                    <p>
+                        Subject:
+                        <input
+                            type="text"
+                            name="subject"
+                            x-model="admin_message.subject"
+                        />
+                    </p>
+                    <p>
+                        Content:
+                        <input
+                            type="text"
+                            name="content"
+                            x-model="admin_message.content"
+                        />
+                    </p>
+                </form>
+                <button
+                    @click="
+                        await fetch('/messages/update', {
+                            method: 'POST',
+                            body: new FormData($refs.updateForm),
+                        });
+                        $dispatch('update-tbl');
+                        $refs.updateForm.closest('dialog').close();
+                    "
+                    hx-trigger="update-tbl"
+                    hx-get="{% url 'view-home-table' %}"
+                    hx-target="#home-table"
+                >
+                    Update
+                </button>
+            </dialog>
+        </div>
+    {% endfor %}
+</div>

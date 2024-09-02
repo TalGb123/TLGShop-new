@@ -8,7 +8,10 @@ from .views import ProductDetailView
 urlpatterns = [
     # home urls
     path("", views.view_home, name="view-home"),
-    path("/messages", views.view_home_table, name="view-home-table"),
+    path("messages", views.view_home_table, name="view-home-table"),
+    path("messages/create", views.create_message, name="create-message"),
+    path("messages/delete", views.delete_message, name="delete-message"),
+    path("messages/update", views.update_message, name="update-message"),
     # product urls
     path("products/", views.view_products, name="view-products"),
     path("product/<int:pk>/", ProductDetailView.as_view(), name="product-detail"),
@@ -38,6 +41,4 @@ urlpatterns = [
     path("builder/save", views.save_spec, name="save-spec"),
     path("builder/view-spec", views.view_spec, name="view-spec"),
     path("builder/search", views.search_spec, name="search-spec"),
-    # order urls
-    path("orders/", views.view_orders, name="view-orders"),
 ]

@@ -17,16 +17,17 @@ async def display_message():
     cur = db.cursor()
     rows = cur.execute(
         f"""
-            SELECT message_subject, message_content, executing_user, date_time 
+            SELECT id, message_subject, message_content, username, date_time 
             FROM admin_messages
             ORDER BY date_time DESC
             LIMIT 10
         """
     ).fetchall()
     messages = []
-    for subject, content, username, date_time in rows:
+    for id, subject, content, username, date_time in rows:
         messages.append(
             {
+                "id": id,
                 "username": username,
                 "subject": subject,
                 "content": content,
@@ -37,7 +38,7 @@ async def display_message():
 
 
 class InsertMessageReq(BaseModel):
-    username: int
+    username: str
     subject: str
     content: str
 
@@ -45,8 +46,9 @@ class InsertMessageReq(BaseModel):
 @app.post("/insert")
 async def insert_message(req: InsertMessageReq):
     cur = db.cursor()
+    print(req.username, req.subject, req.content)
     cur.execute(
-        f"INSERT INTO admin_messages (subject, content, executing_user, date_time) VALUES (:subject, :content, :executing_user, :date_time)",
+        f"INSERT INTO admin_messages (message_subject, message_content, username, date_time) VALUES (:subject, :content, :username, :date_time)",
         {
             "subject": req.subject,
             "content": req.content,
@@ -66,22 +68,30 @@ class UpdateMessageReq(BaseModel):
 async def update_message(req: UpdateMessageReq):
     cur = db.cursor()
     cur.execute(
-        f"""UPDATE admin_messages 
-        SET message_subject= :subject, message_content= :content
-        WHERE id= :id""",
-        {"subject ": req.subject, "content": req.content, "id": req.id},
+        """
+        UPDATE admin_messages 
+        SET message_subject = :subject, message_content = :content
+        WHERE id= :id
+        """,
+        {"subject": req.subject, "content": req.content, "id": req.id},
     )
 
 
-class DeleteMessageReq(BaseModel):
+class SearchMessageReq(BaseModel):
     id: int
 
 
+@app.get("/search")
+async def search_message(req: SearchMessageReq):
+    cur = db.cursor()
+    message = cur.execute(
+        f"SELECT id, message_subject, message_content, username, date_time FROM admin_messages WHERE id= :id",
+        {"id": req.id},
+    ).fetchall()
+    return message
+
+
 @app.post("/delete")
-async def delete_message(req: DeleteMessageReq):
+async def delete_message(req: SearchMessageReq):
     cur = db.cursor()
     cur.execute(f"DELETE FROM admin_messages WHERE id= :id", {"id": req.id})
-
-
-
-    

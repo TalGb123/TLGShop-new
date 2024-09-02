@@ -9,29 +9,118 @@ from django.views.generic.detail import DetailView
 import http.client
 import orjson
 from .models import *
+from users.views import is_worker
+from urllib.parse import urlencode
+
 
 # Create your views here.
 
 
 # home functions
 def view_home(request: HttpRequest):
-
-    context = {"title": "Home", "worker": is_worker(request)}
+    context = {
+        "title": "Home",
+        "worker": is_worker(request),
+        "admin_messages": request_messages(),
+    }
     return render(request, "shop/home.html", context)
 
 
 def view_home_table(request: HttpRequest):
+    context = {"admin_messages": request_messages(), "title": "Home"}
+    return render(request, "shop/home_table.html", context)
+
+
+def request_messages():
+    conn = http.client.HTTPConnection("localhost", 8000)
+    conn.request("GET", "/")
+    res = conn.getresponse()
+    return orjson.loads(res.read().decode())
+
+
+def create_message(request: HttpRequest):
+    if request.method == "POST":
+        subject = request.POST.get("subject")
+        content = request.POST.get("content")
+
+        if not (subject and content):
+            return HttpResponse("Missing required fields")
+
+        payload = orjson.dumps(
+            {
+                "subject": subject,
+                "content": content,
+                "username": request.user.username,
+            }
+        )
+        conn = http.client.HTTPConnection("localhost", 8000)
+        conn.request(
+            "POST",
+            f"/insert",
+            payload,
+        )
+        return HttpResponseRedirect("/")
+
+
+def search_message(request: HttpRequest):
     if request.method == "GET":
-        conn = http.client.HTTPConnection("localhost", 8000)  # Replace with the correct host and port
-        conn.request("GET", "/")
+        id = request.GET.get("id")
+        payload = orjson.dumps(
+            {
+                "id": id,
+            }
+        )
+        conn = http.client.HTTPConnection("localhost", 8000)
+        conn.request(
+            "POST",
+            f"/search",
+            payload,
+        )
         res = conn.getresponse()
-        if res:
-            print(True)
-        data = orjson.loads(res.read().decode())["username"]["subject"]["content"]["date_time"]
-        context = {"messages": data, "title": "Home"}
-        return render(request, "shop/home_table.html", context)
-    return HttpResponseRedirect("/")
-    
+        return JsonResponse(orjson.loads(res.read().decode()))
+
+
+def update_message(request: HttpRequest):
+    if request.method == "POST":
+        id = request.POST.get("id")
+        subject = request.POST.get("subject")
+        content = request.POST.get("content")
+
+        if not (subject and content):
+            return HttpResponse("Missing required fields")
+
+        payload = orjson.dumps(
+            {
+                "id": id,
+                "subject": subject,
+                "content": content,
+            }
+        )
+        conn = http.client.HTTPConnection("localhost", 8000)
+        conn.request(
+            "POST",
+            f"/update",
+            payload,
+        )
+        return HttpResponseRedirect("/")
+    return HttpResponse(request)
+
+
+def delete_message(request: HttpRequest):
+    if request.method == "POST":
+        id = request.POST.get("id")
+        payload = orjson.dumps(
+            {
+                "id": id,
+            }
+        )
+        conn = http.client.HTTPConnection("localhost", 8000)
+        conn.request(
+            "POST",
+            f"/delete",
+            payload,
+        )
+
 
 # product functions
 def view_products(request: HttpRequest):
@@ -496,12 +585,13 @@ def create_worker(request: HttpRequest):
     building_number = request.POST.get("building_number", "")
     apartment_number = request.POST.get("apartment_number", "")
     cellphone_number = request.POST.get("cellphone_number", "")
-    account = request.POST.get("account_id")
+    account = request.POST.get("account")
     work_branch = request.POST.get("work_branch")
     job_title = request.POST.get("job_title")
     workstart_date = request.POST.get("workstart_date")
 
     if not person_id or not first_name or not last_name or not account:
+        print("I've fucked up!!!!!")
         return HttpResponse(request)
 
     try:
@@ -846,7 +936,7 @@ def save_spec(request: HttpRequest):
         # Return a JSON response containing the data
         # rndr = render(request, "shop/spec.html", data)
         # return rndr
-        return JsonResponse(data)  # Return the JSON response
+        return render(request, "shop/spec.html", data)
     return JsonResponse(
         {"error": "bad method"}, status=405
     )  # Return a JSON response with an error message and a 405 status code
@@ -912,13 +1002,6 @@ def search_spec(request: HttpRequest):
         )  # Render the 'spec.html' template with the data
     # Return a JSON response with an error message and a 405 status code if the request method is not GET
     return JsonResponse({"error": "bad method"}, status=405)
-
-
-# orders functions
-def view_orders(request):
-    data = Order.objects.all()
-    context = {"title": "Orders", "orders": data, "worker": is_worker(request)}
-    return render(request, "shop/orders.html", context)
 
 
 def is_worker(request):

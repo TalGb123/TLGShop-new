@@ -2,4 +2,33 @@
 {% block content %}
     <h1>Home</h1>
     {% include "shop/home_table.html" %}
+
+    <div x-data="">
+        <button
+            @click="$refs.modal.showModal(); $dispatch('insert-tbl')"
+            hx-trigger="insert-tbl"
+            hx-get="{% url 'view-home-table' %}"
+            hx-target="#home-table"
+        >
+            Insert
+        </button>
+        <dialog x-ref="modal">
+            <form
+                method="post"
+                action="/messages/create"
+                style="display: flex; flex-direction: column"
+            >
+                {% csrf_token %}
+                <label for="subject">
+                    Subject:
+                    <input type="text" name="subject" />
+                </label>
+                <label for="content">
+                    Message Content:
+                    <input type="text" name="content" />
+                </label>
+                <button type="submit">Save</button>
+            </form>
+        </dialog>
+    </div>
 {% endblock content %}
