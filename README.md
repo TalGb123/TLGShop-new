@@ -34,10 +34,31 @@ pipenv sync
 pipenv --venv
 ```
 
-### 5. Enter the venv path in the python interpreter selector
+### 5. Enter the venv path in the python interpreter selector (VSC)
 
-// avi suggestions:
-happy hour discount - random hour in the day that will give discount
-network api - nis to usd conversion on product page
+```shell
+View > Command palette > Select interpreter > Enter interpreter path > [insert venv path] > click enter
+```
+
+### 6. Run internal Service
+
+```shell
+in terminal do:
+1. cd .\internal_service\
+2. fastapi dev
+```
+
+### Admin login to explore the whole project
+
+```shell
+username: TalGubenko
+password: tal123123
+```
+
+### NOTE: home page does not work due to faulty internal service
+
+```shell
+make sure to add  **/products** to the website address and avoid joining home page
+```
 
 
