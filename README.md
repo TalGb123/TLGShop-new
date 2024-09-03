@@ -55,7 +55,7 @@ username: TalGubenko
 password: tal123123
 ```
 
-### NOTE: home page does not work due to faulty internal service
+## NOTE: Home page does not operate due to faulty internal service
 
 ```shell
 make sure to add  **/products** to the website address and avoid joining home page
