@@ -1,9 +1,10 @@
 ## Tech Stack
 
--   [Django](https://www.djangoproject.com/) - framework
--   [Python](https://www.python.org/) - language
--   [Alpine.js](https://alpinejs.dev/start-here) - secondary language
--   [SQLite](https://www.sqlite.org/index.html) - database
+-   [Django](https://www.djangoproject.com/) - Framework
+-   [Python](https://www.python.org/) - Language
+-   [Alpine.js](https://alpinejs.dev/start-here) - JavaScript Library
+-   [HTMX](https://htmx.org/) - HTML Extension 
+-   [SQLite](https://www.sqlite.org/index.html) - Database
 
 ## Getting Started
 
